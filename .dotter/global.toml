@@ -1,0 +1,27 @@
+[helpers]
+
+[default]
+depends = []
+
+[default.files]
+alacritty = "~/.config/alacritty"
+".bash_profile" = "~/.bash_profile"
+".bashrc" = "~/.bashrc"
+bitbar = "~/.config/bitbar"
+blender = "~/.config/blender"
+bunch = "~/.config/bunch"
+cookiecutters = "~/.config/cookiecutters"
+espanso = { target = "~/.config/espanso", type = "symbolic" }
+hammerspoon = "~/.config/hammerspoon"
+"karabiner.edn" = "~/.config/karabiner.edn"
+nvim = "~/.config/nvim/"
+".searchlink" = "~/.searchlink"
+shell = "~/.config/shell"
+skhd = "~/.config/skhd"
+"starship.toml" = "~/.config/starship.toml"
+".titler" = "~/.titler"
+".vimrc" = { target = "~/.vimrc", type = "symbolic" }
+warpd = "~/.config/warpd"
+zsh = "~/.config/zsh"
+
+[default.variables]

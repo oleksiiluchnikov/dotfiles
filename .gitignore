@@ -1,0 +1,11 @@
+.dotter/cache*
+espanso/match/packages
+.zsh_sessions
+.zsh_history
+.zhistory
+.dotter/local.toml
+*.swp
+.secrets
+.DS_Store
+zsh/.zcompdump
+zsh/plugins/completion.zsh

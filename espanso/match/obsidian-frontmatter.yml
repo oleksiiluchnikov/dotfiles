@@ -1,0 +1,20 @@
+matches:
+  - trigger: "nt"
+    replace: "type:"
+    word: true
+
+  - trigger: "ntp"
+    replace: "type: Project"
+    word: true
+
+  - trigger: "nts"
+    replace: "type: Snippet"
+    word: true
+
+  - trigger: "ntv"
+    replace: "type: View"
+    word: true
+
+  - trigger: "ntpm"
+    replace: "type: Program"
+    word: true
