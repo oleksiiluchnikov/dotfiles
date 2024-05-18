@@ -1,4 +1,0 @@
-matches:
-# Code Block
-  - trigger: "``"
-    replace: "```\n$|$\n```"
