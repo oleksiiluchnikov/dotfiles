@@ -12,4 +12,4 @@ source "$ZDOTDIR/.zshrc"
 
 # Source API keys
 # shellcheck source=/dev/null
-source "$XDG_CONFIG_HOME/api_keys"
+source "$XDG_CONFIG_HOME/.api_keys"

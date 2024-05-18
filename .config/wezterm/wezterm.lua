@@ -1,9 +1,11 @@
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
 local config = {}
+
 if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
+
 local custom = wezterm.color.get_builtin_schemes()["Catppuccin Mocha"]
 custom.background = "#000000"
 custom.tab_bar.background = "#040404"
@@ -13,16 +15,18 @@ config.color_scheme = "OLEDppuccin"
 config.color_schemes = {
 	OLEDppuccin = custom,
 }
+
+-- Fonts
 config.font = wezterm.font("ProggyCleanTTSZ Nerd Font Mono")
 -- config.font = wezterm.font("Monaspace Nerd Font Mono")
-config.term = "screen-256color"
 -- config.font = wezterm.font("Monaspace Argon")
 -- config.font = wezterm.font("Monaspace Krypton")
 -- config.font = wezterm.font("Monaspace Xenon")
 -- config.font = wezterm.font("Monaspace Radon")
 -- config.font = wezterm.font("BigBlueTermPlus Nerd Font Mono")
+
+config.term = "screen-256color"
 config.font_size = 28.0
--- config.font_size = 30.0
 config.freetype_load_flags = "NO_HINTING"
 config.freetype_load_target = "Mono"
 config.freetype_render_target = "HorizontalLcd"
