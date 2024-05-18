@@ -1,0 +1,176 @@
+# Aliases
+# =============================================================================
+alias ..='cd ..'
+
+# Remappings
+alias rm='rm -i'               # confirm before deleting
+alias cp='cp -i'               # confirm before overwriting
+alias mv='mv -i'               # confirm before moving
+alias mkdir='mkdir -p'         # create parent directories if they don't exist
+alias grep='grep --color=auto' # highlight matches in grep
+
+alias pip='pip3'   # use pip3 for Python 3
+alias py='python3' # use python3 for Python 3
+
+# Lock the screen (when going AFK)
+alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+
+# Recursively delete `.DS_Store` files starting from the current directory
+alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
+
+# dotfiles - Manage dotfiles with a git bare repository
+# =============================================================================
+alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
+function configadd() {
+
+    # Check if the item is a file or directory
+    item_type="file"
+    if [ -d "$1" ]; then
+        item_type="directory"
+    fi
+
+    # Ensure .gitignore exists
+    if [ ! -f "$HOME/.gitignore" ]; then
+        touch "$HOME/.gitignore"
+        echo "*" >>"$HOME/.gitignore"
+        echo ".gitignore" >>"$HOME/.gitignore"
+    fi
+
+    # Check if the !{file/directory} is already in the .gitignore
+    if grep -q "^\!$1$" "$HOME/.gitignore"; then
+        echo "$item_type $1 is already in dotfiles."
+        return
+    fi
+
+    # Add the !{file/directory} to .gitignore and add it to the dotfiles
+    echo "Are you sure you want to add $item_type $1 to dotfiles? [Y/n]"
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        echo "!$1" >>"$HOME/.gitignore" && config add -f "$1" && config commit
+    else
+        echo "Operation canceled. $item_type $1 not added to dotfiles."
+    fi
+}
+
+# exa - A modern replacement for ls
+# =============================================================================
+if command -v exa &>/dev/null; then
+    alias l='exa -lah'                                      # add human readable flags to l alias
+    alias ls='exa --color=always --group-directories-first' # replace ls with exa for colorful output, group dirs first
+fi
+
+# bat - A cat(1) clone with wings
+# =============================================================================
+if command -v bat &>/dev/null; then
+    alias cat='bat' # replace cat with bat for syntax highlighting and more features
+fi
+
+# qmk - Quantum Mechanical Keyboard Firmware
+# =============================================================================
+if command -v qmk &>/dev/null; then
+    alias kc='qmk compile -kb idobao/id75/v2 -km oleksiiluchnikov' # compile qmk keymap
+    alias kf='qmk flash -kb idobao/id75/v2 -km oleksiiluchnikov'   # flash qmk keymap
+fi
+
+# neovim - Vim-fork focused on extensibility and usability
+# ==============================================================================
+if command -v nvim &>/dev/null; then
+    alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs nvim'
+    # alias n='nvim .'
+    # Let better do next:
+    # - rename current session to basename of directory which n dir/file to dir basename
+    # - open nvim file
+    # - if no file is provided, open nvim in current directory and basename of dir is session name
+    # - if dir not provided but file is, open file in nvim and set basename to parent dir of file
+    n() {
+        local dir="${1:-.}"
+        # nvim "$dir"
+        if [ -d "$dir" ]; then
+            # nvim "$dir" and cd to dir
+            nvim -c "cd $dir" "$dir"
+        else
+            # nvim file and cd to parent dir
+            local parent_dir
+            parent_dir=$(dirname "$dir")
+            nvim -c "cd $parent_dir" "$dir"
+        fi
+    }
+fi
+
+# hammerspoon - Staggeringly powerful macOS desktop automation with Lua
+# =============================================================================
+if command -v hs &>/dev/null; then
+    # reload hammerspoon config
+
+    hsr() {
+        # killall Hammerspoon if it's running
+        if pgrep -x "Hammerspoon" >/dev/null; then
+            killall Hammerspoon
+        fi
+        # start Hammerspoon
+        open -a /Applications/Hammerspoon.app
+        # wait for Hammerspoon to start
+        sleep 1
+        # reload config
+        osascript -e 'tell application "Hammerspoon" to do shell script "hs.reload()"'
+    }
+fi
+
+# Journaling
+# =============================================================================
+# if $VAULT_JOURNAL is set, use it as the journal directory
+today() {
+    if [ -z "$VAULT_JOURNAL" ]; then
+        echo "Please set the VAULT_JOURNAL environment variable to your journal directory."
+        return 1
+    fi
+    local date
+    date=$(date +'%Y-%m-%d %A')
+    local file="$VAULT_JOURNAL/Daily/$date.md"
+    if [ ! -f "$file" ]; then
+        echo "# $(date +'%Y-%m-%d %A')" >"$file"
+    fi
+    $EDITOR "$file"
+}
+
+yesterday() {
+    if [ -z "$VAULT_JOURNAL" ]; then
+        echo "Please set the VAULT_JOURNAL environment variable to your journal directory."
+        return 1
+    fi
+    local date
+    date=$(date -v-1d +'%Y-%m-%d %A')
+    local file="$VAULT_JOURNAL/Daily/$date.md"
+    if [ ! -f "$file" ]; then
+        echo "# $(date -v-1d +'%Y-%m-%d %A')" >"$file"
+    fi
+    $EDITOR "$file"
+}
+
+tomorrow() {
+    if [ -z "$VAULT_JOURNAL" ]; then
+        echo "Please set the VAULT_JOURNAL environment variable to your journal directory."
+        return 1
+    fi
+    local date
+    date=$(date -v+1d +'%Y-%m-%d %A')
+    local file="$VAULT_JOURNAL/Daily/$date.md"
+    if [ ! -f "$file" ]; then
+        echo "# $(date -v+1d +'%Y-%m-%d %A')" >"$file"
+    fi
+    $EDITOR "$file"
+}
+
+year() {
+    if [ -z "$VAULT_JOURNAL" ]; then
+        echo "Please set the VAULT_JOURNAL environment variable to your journal directory."
+        return 1
+    fi
+    local year
+    year=$(date +'%Y')
+    local file="$VAULT_JOURNAL/Yearly/$year.md"
+    if [ ! -f "$file" ]; then
+        echo "# $year" >"$file"
+    fi
+    $EDITOR "$file"
+}
