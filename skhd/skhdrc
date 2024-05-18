@@ -1,4 +1,0 @@
-# Open new Alacritty window
-hyper - a : osascript -e 'tell application "Keyboard Maestro Engine" to do script "606F4E5A-D938-4209-94BF-C5752D31907A"'
-# Run warpd in (daemonless) hint mode
-f14 : warpd --hint
