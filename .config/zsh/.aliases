@@ -174,3 +174,42 @@ year() {
     fi
     $EDITOR "$file"
 }
+
+note() {
+    if [ -z "$VAULT" ]; then
+        echo "Please set the VAULT environment variable to your notes directory."
+        return 1
+    fi
+
+    if [ -z "$1" ]; then
+        echo "Please provide a note title."
+        return 1
+    fi
+
+    local timestamp
+    timestamp=$(date +'%Y%m%d%H%M%S') # e.g. 20241229235959
+
+    local basename
+    # remove restricted characters from baseneme for macOS compatibility
+    basename=$(echo "$1" | tr -d '/\\?%*:|"<>')
+
+    local title
+    title="# $basename"
+
+    local file="$VAULT/$timestamp $basename.md"
+
+    if [ ! -f "$file" ]; then
+        echo "$timestamp $title" >"$file"
+    fi
+
+    $EDITOR "$file"
+}
+
+# Drafts - Capture text, notes, and ideas
+# =============================================================================
+
+alias draft="wezterm start -- zsh "'"$SCRIPTS/drafts/create.sh"' # create a draft from the command line
+alias d='draft'
+
+# alt + d to create a draft from the clipboard
+bindkey -s '\ed' 'd\n'
